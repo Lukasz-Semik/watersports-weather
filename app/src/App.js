@@ -10,7 +10,9 @@ class App extends Component{
 
     this.state = {
       weatherByGeolocationTried: false,
-      weatherByGeolocationFetched: false
+      weatherByGeolocationFetched: false,
+      userCity: null,
+      userCountry: null
     }
   }
   componentDidMount(){
@@ -25,8 +27,13 @@ class App extends Component{
           .then(response=>{
             console.log(response.data);
             this.setState({
-              weatherByGeolocationFetched: true
+              weatherByGeolocationFetched: true,
+              userCity: response.data.city.name,
+              userCountry: response.data.city.country
             }) 
+          })
+          .then(()=>{
+            console.log('geolocation state is done');
           })
       })
     }
