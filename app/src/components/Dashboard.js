@@ -21,17 +21,7 @@ class Dashboard extends Component{
 
   componentDidMount(){
     const API_URL = 'http://api.openweathermap.org/data/2.5/forecast?';
-    let lastFetchTime;
-    try{
-      lastFetchTime = JSON.parse(localStorage.getItem('timeOfWeatherForStorage'));
-    }catch(e){
-      lastFetchTime = null;
-    }
-    // Block of code created to be compliant with 
-    // API and do not trigger the same req more often than 10 minutes
-    const storageTime = moment(lastFetchTime).add(10,'m')
-    const currentTime = moment()
-    const isDelayedEnough = !lastFetchTime ? true : storageTime.isBefore(currentTime,'m');
+    const isDelayedEnough = this.checkIfDelayIsEnough()
     console.log(isDelayedEnough);
     if(!isDelayedEnough){
       console.log('we cannot fetch');
@@ -42,6 +32,20 @@ class Dashboard extends Component{
       return; 
     }
     this.setState({geolocationDeniedOrErr: true})
+  }
+
+  checkIfDelayIsEnough(){
+    // Block of code created to be compliant with 
+    // API requirements and do not trigger the same req more often than 10 minutes
+    let lastFetchTime;
+    try{
+      lastFetchTime = JSON.parse(localStorage.getItem('timeOfWeatherForStorage'));
+    }catch(e){
+      lastFetchTime = null;
+    }
+    const storageTime = moment(lastFetchTime).add(10,'m')
+    const currentTime = moment()
+    return !lastFetchTime ? true : storageTime.isBefore(currentTime,'m');
   }
 
   geolocationFetching(apiUrl){
